@@ -389,7 +389,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6891143881786037005}
-  - component: {fileID: 8109553675536507114}
+  - component: {fileID: 744594217064265381}
   - component: {fileID: 4601543059711304877}
   m_Layer: 0
   m_Name: Character
@@ -419,7 +419,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8109553675536507114
+--- !u!114 &744594217064265381
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

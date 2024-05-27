@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c0a3db57ffd1c345ae7c2147827ce7b, type: 3}
-  m_Name: Boss
+  m_Name: Class_2_Knight
   m_EditorClassIdentifier: 
-  unitType: 1
-  maxHp: 10
-  atkPower: 1
+  unitType: 0
+  maxHp: 200
+  atkPower: 5
   atkDelay: 1
   atkRange: 1
-  moveSpeed: 1
-  sprite: {fileID: 4723107735738678597, guid: 19b4c3dc760bd7c4eb17dc61bc98bfe5, type: 3}
-  spriteLibrary: {fileID: 11400000, guid: d2cd61b996e2d44458e1b8094b2a4daf, type: 2}
-  rewardGold: 10
+  moveSpeed: 2
+  sprite: {fileID: 4723107735738678597, guid: faca0c167b76b7b428585e743eeb3cb3, type: 3}
+  spriteLibrary: {fileID: 11400000, guid: b88ed37c189c1bc45bd6874d081d8fcb, type: 2}
+  rewardGold: 0
