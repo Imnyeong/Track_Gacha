@@ -50,29 +50,31 @@ public class SelectButton : MonoBehaviour
         curUnitData = null;
         int randomValue = UnityEngine.Random.Range(0, 100);
         int priceValue;
-
         sprite.color = new Color32(255, 255, 255, 255);
+
+        if (GameManager.instance.stage == 1)
+            randomValue = 0;
 
         if (randomValue <= 70)
         {
             UnitData[] class1Chars = Resources.LoadAll<UnitData>("Characters/Class_1");
             curUnitData = class1Chars[UnityEngine.Random.Range(0, class1Chars.Length)];
-            price.text = "1000";
-            priceValue = 1000;
+            price.text = "100";
+            priceValue = 100;
         }
         else if (randomValue > 70 && randomValue < 90)
         {
             UnitData[] class2Chars = Resources.LoadAll<UnitData>("Characters/Class_2");
             curUnitData = class2Chars[UnityEngine.Random.Range(0, class2Chars.Length)];
-            price.text = "5000";
-            priceValue = 5000;
+            price.text = "500";
+            priceValue = 500;
         }
         else
         {
             UnitData[] class3Chars = Resources.LoadAll<UnitData>("Characters/Class_3");
             curUnitData = class3Chars[UnityEngine.Random.Range(0, class3Chars.Length)];
-            price.text = "10000";
-            priceValue = 10000;
+            price.text = "1000";
+            priceValue = 1000;
         }
         content.text = $"공격력: {curUnitData.atkPower}\n체력: {curUnitData.maxHp}\n이동속도: {curUnitData.moveSpeed}";
         sprite.sprite = curUnitData.sprite;
@@ -91,7 +93,7 @@ public class SelectButton : MonoBehaviour
 
         SoundManager.instance.PlayUpgradeSound();
         GameManager.instance.gold -= _price;
-        UIManager.Instance.RefreshGold();
+        UIManager.instance.RefreshGold();
         if (_type == 0)
         {
             GameManager.instance.atkLevel++;
@@ -105,7 +107,7 @@ public class SelectButton : MonoBehaviour
             GameManager.instance.spdLevel++;
         }
 
-        UIManager.Instance.HideSelectPopup();
+        UIManager.instance.HideSelectPopup();
         GameManager.instance.SetStage(GameManager.instance.stage);
     }
 
@@ -118,9 +120,9 @@ public class SelectButton : MonoBehaviour
         GameManager.instance.charList.Add(curUnitData);
         SoundManager.instance.PlayUpgradeSound();
         GameManager.instance.gold -= _price;
-        UIManager.Instance.RefreshGold();
+        UIManager.instance.RefreshGold();
 
-        UIManager.Instance.HideSelectPopup();
+        UIManager.instance.HideSelectPopup();
         GameManager.instance.SetStage(GameManager.instance.stage);
     }
 }

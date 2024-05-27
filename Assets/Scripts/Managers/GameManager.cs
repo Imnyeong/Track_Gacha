@@ -19,8 +19,6 @@ public class GameManager : MonoBehaviour
     public Transform characters;
     public Transform monsters;
 
-    //[HideInInspector] public UnitData[] unitDatas;
-
     [HideInInspector] public int hpLevel = 1;
     [HideInInspector] public int atkLevel = 1;
     [HideInInspector] public int spdLevel = 1;
@@ -36,14 +34,19 @@ public class GameManager : MonoBehaviour
     }
     public void Start()
     {
-        UIManager.Instance.ShowSelectPopup();
+        SetFirst();
+        UIManager.instance.ShowSelectPopup();
     }
     #endregion
 
     #region Stage
-    public void StartStage()
+    public void SetFirst()
     {
-        SetStage(stage);
+        stage = 1;
+        gold = 100;
+        charList.Clear();
+        UIManager.instance.RefreshStage();
+        UIManager.instance.RefreshGold();
     }
     public void CheckGameEnd()
     {
@@ -57,12 +60,22 @@ public class GameManager : MonoBehaviour
         }
         if(gameEnd)
         {
-            Debug.Log("GameOver");
-            //SetStage();
+            for (int i = 0; i < charList.Count; i++)
+            {
+                characters.GetChild(i).GetComponent<Character>().StopUnitCoroutines();
+            }
+            MonsterSpawner.instance.StopSpawnerCoroutine();
+            MonsterSpawner.instance.ClearSpawner();
+            UIManager.instance.ShowGameOverPopup();
         }
     }
     public void SetStage(int _stage)
     {
+        for (int i = 0; i < characters.childCount; i++)
+        {
+            characters.GetChild(i).gameObject.SetActive(false);
+        }
+
         if (_stage == 1)
         {
             stage = 1;
@@ -76,8 +89,8 @@ public class GameManager : MonoBehaviour
         MonsterSpawner.instance.ClearSpawner();
         MonsterSpawner.instance.SetSpawner();
 
-        UIManager.Instance.RefreshStage();
-        UIManager.Instance.RefreshGold();
+        UIManager.instance.RefreshStage();
+        UIManager.instance.RefreshGold();
 
         for (int i = 0; i < charList.Count; i++)
         {
@@ -93,13 +106,10 @@ public class GameManager : MonoBehaviour
         {
             characters.GetChild(i).GetComponent<Character>().StopUnitCoroutines();
         }
-        for (int i = 0; i < monsters.childCount; i++)
-        {
-            Destroy(monsters.GetChild(i).gameObject);
-        }
         MonsterSpawner.instance.StopSpawnerCoroutine();
+        MonsterSpawner.instance.ClearSpawner();
         stage++;
-        UIManager.Instance.ShowSelectPopup();
+        UIManager.instance.ShowSelectPopup();
     }
     #endregion
     #region Camera
@@ -125,7 +135,7 @@ public class GameManager : MonoBehaviour
     {
         SoundManager.instance.PlayButtonSound();
         gameSpeed = gameSpeed == 1 ? 2 : 1;
-        UIManager.Instance.ChangeIcon(gameSpeed);
+        UIManager.instance.ChangeIcon(gameSpeed);
         SoundManager.instance.sourceBGM.pitch = gameSpeed;
     }
     #endregion

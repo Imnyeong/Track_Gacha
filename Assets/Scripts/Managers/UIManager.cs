@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public static UIManager Instance = null;
+    public static UIManager instance = null;
 
     [SerializeField] private Text stageText;
     [SerializeField] private Text goldText;
@@ -13,13 +13,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Sprite[] speedSprites;
 
     [SerializeField] private SelectPopup selectPopup;
+    [SerializeField] private GameOverPopup gameoverPopup;
 
     #region Unity Life Cycle
     public void Awake()
     {
-        if (Instance == null)
+        if (instance == null)
         {
-            Instance = this;
+            instance = this;
             DontDestroyOnLoad(this);
         }
     }
@@ -44,6 +45,14 @@ public class UIManager : MonoBehaviour
     public void HideSelectPopup()
     {
         selectPopup.HideSelectPopup();
+    }
+    public void ShowGameOverPopup()
+    {
+        gameoverPopup.ShowGameOverPopup();
+    }
+    public void HideGameOverPopup()
+    {
+        gameoverPopup.HideGameOverPopup();
     }
     #endregion
 }

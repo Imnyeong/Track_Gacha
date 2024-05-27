@@ -16,7 +16,6 @@ public class MonsterSpawner : MonoBehaviour
 
     private float rangeX = 8.0f;
     private float rangeY = 4.5f;
-    private bool spawnBoss = false;
     [HideInInspector] public int killCount = 0;
 
     #region Unity Life Cycle
@@ -37,11 +36,10 @@ public class MonsterSpawner : MonoBehaviour
     public IEnumerator SpawnCoroutine()
     {
         yield return new WaitForSecondsRealtime(spawnDelay / GameManager.instance.gameSpeed);
-        bool isBoss = killCount >= GameManager.instance.stage && spawnBoss == false;
 
         if (this.transform.childCount > 0)
         {
-            SpawnMonster(this.transform.GetChild(0).gameObject, isBoss);
+            SpawnMonster(this.transform.GetChild(0).gameObject);//, isBoss);
         }
         StartCoroutine(SpawnCoroutine());
     }
@@ -50,7 +48,6 @@ public class MonsterSpawner : MonoBehaviour
     public void SetSpawner()
     {
         killCount = 0;
-        spawnBoss = false;
 
         for (int i = 0; i < this.transform.childCount; i++)
         {
@@ -78,7 +75,7 @@ public class MonsterSpawner : MonoBehaviour
             Destroy(GameManager.instance.monsters.GetChild(i).gameObject);
         }
     }
-    public void SpawnMonster(GameObject _go, bool _isBoss)
+    public void SpawnMonster(GameObject _go)//, bool _isBoss)
     {
         int randomIndex = UnityEngine.Random.Range(0, GameManager.instance.characters.childCount);
         Vector2 charPos= GameManager.instance.characters.GetChild(randomIndex).transform.localPosition;
@@ -90,11 +87,6 @@ public class MonsterSpawner : MonoBehaviour
         _go.transform.localPosition = new Vector3(randomX, randomY, 0.0f);
         _go.SetActive(true);
         _go.GetComponent<Monster>().Init();
-
-        if(_isBoss)
-        {
-            spawnBoss = true;
-        }
     }
     public void DespawnMonster(GameObject _go, bool _isBoss)
     {

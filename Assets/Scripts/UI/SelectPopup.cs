@@ -1,12 +1,25 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SelectPopup : MonoBehaviour
 {
     [SerializeField] private SelectButton[] selects;
+    [SerializeField] private Button skipButton;
 
+    private void Start()
+    {
+        skipButton.onClick.RemoveAllListeners();
+        skipButton.onClick.AddListener(delegate
+        {
+            UIManager.instance.HideSelectPopup();
+            GameManager.instance.SetStage(GameManager.instance.stage);
+        });
+    }
     public void ShowSelectPopup()
     {
-        foreach(SelectButton select in selects)
+        skipButton.interactable = !(GameManager.instance.stage == 1);
+
+        foreach (SelectButton select in selects)
         {
             if(GameManager.instance.stage == 1)
             {

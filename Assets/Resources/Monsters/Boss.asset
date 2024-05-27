@@ -20,4 +20,4 @@ MonoBehaviour:
   moveSpeed: 1
   sprite: {fileID: 4723107735738678597, guid: 19b4c3dc760bd7c4eb17dc61bc98bfe5, type: 3}
   spriteLibrary: {fileID: 11400000, guid: d2cd61b996e2d44458e1b8094b2a4daf, type: 2}
-  rewardGold: 10
+  rewardGold: 30
