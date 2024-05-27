@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c0a3db57ffd1c345ae7c2147827ce7b, type: 3}
+  m_Name: Class_1_Knight
+  m_EditorClassIdentifier: 
+  unitType: 0
+  maxHp: 100
+  atkPower: 2
+  atkDelay: 2
+  atkRange: 2
+  moveSpeed: 2
+  sprite: {fileID: 4723107735738678597, guid: 37e27140374d5224f835b30e4b44fa5b, type: 3}
+  spriteLibrary: {fileID: 11400000, guid: aaa44b6d3f684334c9435f09719e0334, type: 2}
+  rewardGold: 0
