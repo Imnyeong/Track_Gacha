@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c0a3db57ffd1c345ae7c2147827ce7b, type: 3}
-  m_Name: Goblin
+  m_Name: Class_3_Knight
   m_EditorClassIdentifier: 
-  unitType: 1
-  maxHp: 10
-  atkPower: 1
+  unitType: 0
+  maxHp: 500
+  atkPower: 10
   atkDelay: 1
-  atkRange: 1
-  moveSpeed: 1
-  sprite: {fileID: 4723107735738678597, guid: ddbec5ebc52736243922a347a55570e6, type: 3}
-  spriteLibrary: {fileID: 11400000, guid: 39a1b6d86a6ee054995c82570f9bb05c, type: 2}
-  rewardGold: 10
+  atkRange: 2
+  moveSpeed: 3
+  sprite: {fileID: 4723107735738678597, guid: 43f559c4041d8d841aead2b25acb92ad, type: 3}
+  spriteLibrary: {fileID: 11400000, guid: 5c2d8b2e048d3494aaa3efd81b596319, type: 2}
+  rewardGold: 0

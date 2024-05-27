@@ -389,7 +389,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6891143881786037005}
-  - component: {fileID: 490667988849158079}
+  - component: {fileID: 744594217064265381}
   - component: {fileID: 4601543059711304877}
   m_Layer: 0
   m_Name: Character
@@ -419,7 +419,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &490667988849158079
+--- !u!114 &744594217064265381
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -428,16 +428,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 8226255026279898587}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0034c247c2cfe4d458752ac8b6d383ec, type: 3}
+  m_Script: {fileID: 11500000, guid: a8589bb166306fc4789fc29a47f96b44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 454771695109786860}
   spriteLibrary: {fileID: 8650105453823999644}
   animator: {fileID: 4601543059711304877}
-  maxHp: 100
-  atkPower: 1
-  atkDelay: 1
-  atkRange: 1
+  maxHp: 0
+  atkPower: 0
+  atkDelay: 0
+  atkRange: 0
   moveSpeed: 0.5
   currentHp: 0
   currentTarget: {fileID: 0}
