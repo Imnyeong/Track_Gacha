@@ -4,7 +4,6 @@ public class SoundManager : MonoBehaviour
 {
     public AudioSource sourceBGM;
     public AudioSource sourceEffect;
-    public AudioClip clipOutgameBGM;
     public AudioClip clipIngameBGM;
     public AudioClip[] clipEffects;
     public AudioClip clipButton;
@@ -26,14 +25,7 @@ public class SoundManager : MonoBehaviour
     #region BGM
     public void StartBGM(string _sceneName)
     {
-        if (_sceneName == "OutGame")
-        {
-            sourceBGM.clip = clipOutgameBGM;
-        }
-        else
-        {
-            sourceBGM.clip = clipIngameBGM;
-        }
+        sourceBGM.clip = clipIngameBGM;
         sourceBGM.Play();
     }
     #endregion
