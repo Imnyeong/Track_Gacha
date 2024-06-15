@@ -17,7 +17,6 @@ public class GameOverPopup : MonoBehaviour
         });
         this.gameObject.SetActive(true);
     }
-
     public void HideGameOverPopup()
     {
         button.onClick.RemoveAllListeners();

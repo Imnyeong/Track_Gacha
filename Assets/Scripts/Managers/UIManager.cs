@@ -26,12 +26,9 @@ public class UIManager : MonoBehaviour
     }
     #endregion
     #region UI
-    public void RefreshStage()
+    public void RefreshUI()
     {
         stageText.text = GameManager.instance.stage.ToString();
-    }
-    public void RefreshGold()
-    {
         goldText.text = GameManager.instance.gold.ToString();
     }
     public void ChangeIcon(int _value)

@@ -29,10 +29,6 @@ public class MonsterSpawner : MonoBehaviour
     }
     #endregion
     #region Spawn
-    public void StopSpawnerCoroutine()
-    {
-        StopAllCoroutines();
-    }
     public IEnumerator SpawnCoroutine()
     {
         yield return new WaitForSecondsRealtime(spawnDelay / GameManager.instance.gameSpeed);
@@ -42,6 +38,11 @@ public class MonsterSpawner : MonoBehaviour
             SpawnMonster(this.transform.GetChild(0).gameObject);//, isBoss);
         }
         StartCoroutine(SpawnCoroutine());
+    }
+    public void EndStage()
+    {
+        StopAllCoroutines();
+        ClearSpawner();
     }
     #endregion
     #region Object Pool

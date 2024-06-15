@@ -5,15 +5,15 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
 
-    [Header("Game Status")]
+    [Header("Camera")]
     [SerializeField] private Camera mainCamera;
     private int cameraIndex = 0;
 
     [Header("Game Status")]
-    public int stage = 1;
     public int gameSpeed = 1;
-    public int gold = 0;
-    public List<UnitData> charList;
+    public List<UnitData> charList { get; private set; } = new List<UnitData>();
+    public int stage { get; private set; } = 1;
+    public int gold { get; private set; } = 0;
 
     [Header("Transform")]
     public Transform characters;
@@ -22,6 +22,9 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public int hpLevel = 1;
     [HideInInspector] public int atkLevel = 1;
     [HideInInspector] public int spdLevel = 1;
+
+    [HideInInspector] private const int maxUnitCount = 4;
+    private Vector3 defaultCameraPos = new Vector3(0.0f, 0.0f, -20.0f);
 
     #region Unity Life Cycle
     public void Awake()
@@ -35,18 +38,27 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         SetFirst();
+        ResetData();
         UIManager.instance.ShowSelectPopup();
     }
     #endregion
-
+    public bool CanAddUnit()
+    {
+        return charList.Count < maxUnitCount;
+    }
     #region Stage
     public void SetFirst()
     {
         stage = 1;
         gold = 100;
         charList.Clear();
-        UIManager.instance.RefreshStage();
-        UIManager.instance.RefreshGold();
+        UIManager.instance.RefreshUI();
+    }
+    public void ResetData()
+    {
+        atkLevel = 1;
+        hpLevel = 1;
+        spdLevel = 1;
     }
     public void CheckGameEnd()
     {
@@ -56,16 +68,12 @@ public class GameManager : MonoBehaviour
             if (characters.GetChild(i).GetComponent<Unit>().unitState == UnitState.Live)
             {
                 gameEnd = false;
+                break;
             }
         }
         if(gameEnd)
-        {
-            for (int i = 0; i < charList.Count; i++)
-            {
-                characters.GetChild(i).GetComponent<Character>().StopUnitCoroutines();
-            }
-            MonsterSpawner.instance.StopSpawnerCoroutine();
-            MonsterSpawner.instance.ClearSpawner();
+        {            
+            MonsterSpawner.instance.EndStage();
             UIManager.instance.ShowGameOverPopup();
         }
     }
@@ -75,22 +83,11 @@ public class GameManager : MonoBehaviour
         {
             characters.GetChild(i).gameObject.SetActive(false);
         }
-
         if (_stage == 1)
         {
-            stage = 1;
-            gold = 0;
-            atkLevel = 1;
-            hpLevel = 1;
-            spdLevel = 1;
+            ResetData();
         }
-
-        MonsterSpawner.instance.StopSpawnerCoroutine();
-        MonsterSpawner.instance.ClearSpawner();
         MonsterSpawner.instance.SetSpawner();
-
-        UIManager.instance.RefreshStage();
-        UIManager.instance.RefreshGold();
 
         for (int i = 0; i < charList.Count; i++)
         {
@@ -99,17 +96,24 @@ public class GameManager : MonoBehaviour
             curChar.Init();
         }
         SetCamera(cameraIndex);
+        UIManager.instance.RefreshUI();
     }
     public void ClearStage()
     {
-        for (int i = 0; i < charList.Count; i++)
-        {
-            characters.GetChild(i).GetComponent<Character>().StopUnitCoroutines();
-        }
-        MonsterSpawner.instance.StopSpawnerCoroutine();
-        MonsterSpawner.instance.ClearSpawner();
         stage++;
+        MonsterSpawner.instance.EndStage();
         UIManager.instance.ShowSelectPopup();
+    }
+    public void SetGold(int _value)
+    {
+        gold += _value;
+        UIManager.instance.RefreshUI();
+    }
+    public void BuyCharacter(UnitData _unitData, int _price)
+    {
+        charList.Add(_unitData);
+        gold -= _price;
+        UIManager.instance.RefreshUI();
     }
     #endregion
     #region Camera
@@ -126,7 +130,7 @@ public class GameManager : MonoBehaviour
     public void SetCamera(int _index)
     {
         mainCamera.transform.SetParent(characters.GetChild(_index));
-        mainCamera.transform.localPosition = new Vector3(0.0f, 0.0f, -20.0f);
+        mainCamera.transform.localPosition = defaultCameraPos;
         mainCamera.transform.localScale = Vector3.one;
     }
     #endregion

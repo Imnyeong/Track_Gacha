@@ -10,22 +10,60 @@ public abstract class Unit : MonoBehaviour
 
     [SerializeField] private SpriteRenderer sprite;
     [SerializeField] private SpriteLibrary spriteLibrary;
-
     [SerializeField] private Animator animator;
-
-    [Header("Unit Info")]
-    public float maxHp;
-    public float atkPower;
-    public float atkDelay;
-    public int atkRange;
-    public float moveSpeed = 0.5f;
-
-    [HideInInspector] public float currentHp;
-    [HideInInspector] public Unit currentTarget = null;
-    [HideInInspector] public UnitState unitState = UnitState.Dead;
-
     [SerializeField] private Slider hpBar;
 
+    public float maxHp { get; protected set; }
+    public float atkPower { get; protected set; }
+    public float atkDelay { get; private set; }
+    public int atkRange { get; private set; }
+    public float moveSpeed { get; protected set; } = 0.5f;
+    public float currentHp { get; protected set; }
+    public Unit currentTarget { get; protected set; } = null;
+    public UnitState unitState { get; protected set; } = UnitState.Dead;
+    public AnimationType animationType{ get; protected set; } = AnimationType.Idle;
+
+    private float trackDelay = 0.002f;
+    private float currnetDelay = 0f;
+    private bool canAttack = true;
+
+    private void Update()
+    {
+        if (currentHp <= 0 || unitState == UnitState.Dead)
+            return;
+
+        currnetDelay += Time.deltaTime;
+        if(currnetDelay >= trackDelay)
+        {
+            currnetDelay = 0.0f;
+            currentTarget = GetTarget(this);
+
+            if (currentTarget == null)
+            {
+                DoAnimation(AnimationType.Idle);
+            }
+            else
+            {
+                SetDirection(this.transform.localPosition.x < currentTarget.transform.localPosition.x);
+                float curDistance = Vector2.Distance(this.transform.position, currentTarget.transform.position);
+
+                if (curDistance < atkRange)
+                {
+                    if (!canAttack)
+                    {
+                        DoAnimation(AnimationType.Idle);
+                        return;
+                    }
+                    DoAttack(currentTarget);
+                }
+                else
+                {
+                    DoAnimation(AnimationType.Move);
+                    DoMove(this.transform.position, currentTarget.transform.position);
+                }
+            }
+        }
+    }
     public virtual void Init()
     {
         currentHp = this.maxHp;
@@ -33,8 +71,6 @@ public abstract class Unit : MonoBehaviour
         this.gameObject.SetActive(true);
 
         unitState = UnitState.Live;
-        DoAnimation(AnimationType.Idle);
-        StartCoroutine(TrackCoroutine());
     }
     public virtual void SetData(UnitData _data)
     {
@@ -48,7 +84,6 @@ public abstract class Unit : MonoBehaviour
         sprite.sprite = _data.sprite;
         spriteLibrary.spriteLibraryAsset = _data.spriteLibrary;
     }
-
     public void DoAnimation(AnimationType _type)
     {
         if (gameObject.activeSelf == false)
@@ -56,20 +91,35 @@ public abstract class Unit : MonoBehaviour
 
         animator.speed = GameManager.instance.gameSpeed;
 
+        if (animationType == _type)
+            return;
+
         switch (_type)
         {
             case AnimationType.Idle:
-                animator.Play("Idle");
-                break;
+                {
+                    animationType = AnimationType.Idle;
+                    animator.SetTrigger("Idle");
+                    break;
+                }
             case AnimationType.Move:
-                animator.Play("Move");
-                break;
+                {
+                    animationType = AnimationType.Move;
+                    animator.SetTrigger("Move");
+                    break;
+                }
             case AnimationType.Atk:
-                animator.Play("Attack");
-                break;
+                {
+                    animationType = AnimationType.Atk;
+                    animator.SetTrigger("Attack");
+                    break;
+                }
             case AnimationType.Death:
-                animator.Play("Death");
-                break;
+                {
+                    animationType = AnimationType.Death;
+                    animator.SetTrigger("Death");
+                    break;
+                }
         }
     }
     public Unit GetTarget(Unit _unit)
@@ -95,48 +145,11 @@ public abstract class Unit : MonoBehaviour
         return target;
     }
     #region Coroutine
-    public IEnumerator TrackCoroutine()
-    {
-        yield return new WaitForFixedUpdate();
-        StartCoroutine(MoveCoroutine());
-    }
-    public IEnumerator MoveCoroutine()
-    {
-        currentTarget = GetTarget(this);
-
-        if (currentTarget == null)
-        {
-            DoAnimation(AnimationType.Idle);
-            yield return new WaitForFixedUpdate();
-            StartCoroutine(TrackCoroutine());
-        }
-        else
-        {
-            SetDirection(this.transform.localPosition.x < currentTarget.transform.localPosition.x);
-            float curDistance = Vector2.Distance(this.transform.position, currentTarget.transform.position);
-
-            if (curDistance < atkRange)
-            {
-                StartCoroutine(AttackCoroutine());
-            }
-            else
-            {
-                DoMove(this.transform.position, currentTarget.transform.position);
-                yield return new WaitForFixedUpdate();
-                StartCoroutine(TrackCoroutine());
-            }
-        }
-    }
     public IEnumerator AttackCoroutine()
     {
-        DoAttack(currentTarget);
+        canAttack = false;
         yield return new WaitForSecondsRealtime(atkDelay / GameManager.instance.gameSpeed);
-        DoAnimation(AnimationType.Idle);
-        StartCoroutine(TrackCoroutine());
-    }
-    public void StopUnitCoroutines()
-    {
-        StopAllCoroutines();
+        canAttack = true;
     }
     #endregion
     #region Action
@@ -146,13 +159,13 @@ public abstract class Unit : MonoBehaviour
     }
     public void DoMove(Vector3 _unitPos, Vector3 _targetPos)
     {
-        DoAnimation(AnimationType.Move);
         this.transform.position = Vector3.MoveTowards(_unitPos, _targetPos, Time.deltaTime * moveSpeed * GameManager.instance.gameSpeed);
     }
     public void DoAttack(Unit _target)
     {
         DoAnimation(AnimationType.Atk);
         DoDamage(_target, this.atkPower);
+        StartCoroutine(AttackCoroutine());
     }
     public virtual void DoDamage(Unit _target, float _value)
     {
@@ -165,7 +178,6 @@ public abstract class Unit : MonoBehaviour
     }
     public virtual void Die()
     {
-        StopUnitCoroutines();
         DoAnimation(AnimationType.Death);
         unitState = UnitState.Dead;
     }

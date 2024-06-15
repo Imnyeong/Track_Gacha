@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,33 +8,43 @@ public class SelectButton : MonoBehaviour
     [SerializeField] private Text content;
     [SerializeField] private Text price;
 
+    private const int defaultValue = 10;
+    private const int defaultCost = 100;
+
+    private const int weightOne = 70;
+    private const int weightTwo = 20;
+    private const int weightThree = 10;
+
+    private const int costOne = 100;
+    private const int costTwo = 500;
+    private const int costThree = 1000;
+
     UnitData curUnitData = null;
     public void SetUpgrade()
     {
         button.onClick.RemoveAllListeners();
-        int randomValue = UnityEngine.Random.Range(0, 2);
+        int randomValue = Random.Range(0, 2);
         int priceValue;
 
         sprite.color = new Color32(0, 0, 0, 0);
 
         if (randomValue == 0)
         {
-            content.text  = $"아군의 공격력을 {10 * GameManager.instance.atkLevel} 만큼 증가시킵니다.";
-            price.text  = $"${100 * GameManager.instance.atkLevel}";
-            priceValue = 100 * GameManager.instance.atkLevel;
+            content.text  = $"아군의 공격력을 {defaultValue * GameManager.instance.atkLevel} 만큼 증가시킵니다.";
+            price.text  = $"${defaultCost * GameManager.instance.atkLevel}";
+            priceValue = defaultCost * GameManager.instance.atkLevel;
         }
         else if (randomValue == 1)
         {
-            content.text = $"아군의 체력을 {10 * GameManager.instance.hpLevel} 만큼 증가시킵니다.";
-            price.text = $"${100 * GameManager.instance.hpLevel}";
-            priceValue = 100 * GameManager.instance.hpLevel;
-
+            content.text = $"아군의 체력을 {defaultValue * GameManager.instance.hpLevel} 만큼 증가시킵니다.";
+            price.text = $"${defaultCost * GameManager.instance.hpLevel}";
+            priceValue = defaultCost * GameManager.instance.hpLevel;
         }
         else
         {
             content.text = $"아군의 이동속도를 {GameManager.instance.spdLevel} 만큼 증가시킵니다.";
-            price.text = $"{100 * GameManager.instance.spdLevel}";
-            priceValue = 100 * GameManager.instance.spdLevel;
+            price.text = $"{defaultCost * GameManager.instance.spdLevel}";
+            priceValue = defaultCost * GameManager.instance.spdLevel;
         }
         button.onClick.AddListener(delegate
         {
@@ -48,34 +55,32 @@ public class SelectButton : MonoBehaviour
     {
         button.onClick.RemoveAllListeners();
         curUnitData = null;
-        int randomValue = UnityEngine.Random.Range(0, 100);
+        int randomValue = Random.Range(0, 100);
         int priceValue;
         sprite.color = new Color32(255, 255, 255, 255);
 
         if (GameManager.instance.stage == 1)
             randomValue = 0;
 
-        if (randomValue <= 70)
+        if (randomValue <= weightOne)
         {
             UnitData[] class1Chars = Resources.LoadAll<UnitData>("Characters/Class_1");
-            curUnitData = class1Chars[UnityEngine.Random.Range(0, class1Chars.Length)];
-            price.text = "100";
-            priceValue = 100;
+            curUnitData = class1Chars[Random.Range(0, class1Chars.Length)];
+            priceValue = costOne;
         }
-        else if (randomValue > 70 && randomValue < 90)
+        else if (randomValue > weightOne && randomValue < weightOne + weightTwo)
         {
             UnitData[] class2Chars = Resources.LoadAll<UnitData>("Characters/Class_2");
-            curUnitData = class2Chars[UnityEngine.Random.Range(0, class2Chars.Length)];
-            price.text = "500";
-            priceValue = 500;
+            curUnitData = class2Chars[Random.Range(0, class2Chars.Length)];
+            priceValue = costTwo;
         }
         else
         {
             UnitData[] class3Chars = Resources.LoadAll<UnitData>("Characters/Class_3");
-            curUnitData = class3Chars[UnityEngine.Random.Range(0, class3Chars.Length)];
-            price.text = "1000";
-            priceValue = 1000;
+            curUnitData = class3Chars[Random.Range(0, class3Chars.Length)];
+            priceValue = costThree;
         }
+        price.text = priceValue.ToString();
         content.text = $"공격력: {curUnitData.atkPower}\n체력: {curUnitData.maxHp}\n이동속도: {curUnitData.moveSpeed}";
         sprite.sprite = curUnitData.sprite;
         button.onClick.AddListener(delegate 
@@ -83,7 +88,6 @@ public class SelectButton : MonoBehaviour
             OnClickCharacter(priceValue);
         });
     }
-
     public void OnClickUpgrade(int _type,  int _price)
     {
         if (GameManager.instance.gold < _price)
@@ -92,8 +96,7 @@ public class SelectButton : MonoBehaviour
         }
 
         SoundManager.instance.PlayUpgradeSound();
-        GameManager.instance.gold -= _price;
-        UIManager.instance.RefreshGold();
+        GameManager.instance.SetGold(_price * -1);
         if (_type == 0)
         {
             GameManager.instance.atkLevel++;
@@ -110,18 +113,15 @@ public class SelectButton : MonoBehaviour
         UIManager.instance.HideSelectPopup();
         GameManager.instance.SetStage(GameManager.instance.stage);
     }
-
     public void OnClickCharacter(int _price)
     {
-        if(GameManager.instance.charList.Count > 3 || GameManager.instance.gold < _price)
+        if(!GameManager.instance.CanAddUnit() || GameManager.instance.gold < _price)
         {
             return;
         }
-        GameManager.instance.charList.Add(curUnitData);
         SoundManager.instance.PlayUpgradeSound();
-        GameManager.instance.gold -= _price;
-        UIManager.instance.RefreshGold();
 
+        GameManager.instance.BuyCharacter(curUnitData, _price);
         UIManager.instance.HideSelectPopup();
         GameManager.instance.SetStage(GameManager.instance.stage);
     }

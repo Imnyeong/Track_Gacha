@@ -28,8 +28,8 @@ public class Monster : Unit
     {
         base.Die();
 
-        GameManager.instance.gold += this.rewardGold;
-        UIManager.instance.RefreshGold();
+        GameManager.instance.SetGold(rewardGold);
+        UIManager.instance.RefreshUI();
         if (!isBoss)
         {
             MonsterSpawner.instance.killCount++;

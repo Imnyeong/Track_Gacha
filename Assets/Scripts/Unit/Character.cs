@@ -14,7 +14,6 @@ public class Character : Unit
     #region Override
     public override void Init()
     {
-        StopUnitCoroutines();
         base.Init();
 
         atkPower += GameManager.instance.atkLevel * 10.0f;
