@@ -16,9 +16,9 @@ public abstract class Unit : MonoBehaviour
     public float maxHp { get; protected set; }
     public float atkPower { get; protected set; }
     public float atkDelay { get; private set; }
-    public int atkRange { get; private set; }
     public float moveSpeed { get; protected set; } = 0.5f;
     public float currentHp { get; protected set; }
+    public int atkRange { get; private set; }
     public Unit currentTarget { get; protected set; } = null;
     public UnitState unitState { get; protected set; } = UnitState.Dead;
     public AnimationType animationType{ get; protected set; } = AnimationType.Idle;
@@ -58,7 +58,6 @@ public abstract class Unit : MonoBehaviour
                 }
                 else
                 {
-                    DoAnimation(AnimationType.Move);
                     DoMove(this.transform.position, currentTarget.transform.position);
                 }
             }
@@ -159,6 +158,7 @@ public abstract class Unit : MonoBehaviour
     }
     public void DoMove(Vector3 _unitPos, Vector3 _targetPos)
     {
+        DoAnimation(AnimationType.Move);
         this.transform.position = Vector3.MoveTowards(_unitPos, _targetPos, Time.deltaTime * moveSpeed * GameManager.instance.gameSpeed);
     }
     public void DoAttack(Unit _target)

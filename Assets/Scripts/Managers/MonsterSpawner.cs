@@ -16,6 +16,7 @@ public class MonsterSpawner : MonoBehaviour
 
     private float rangeX = 8.0f;
     private float rangeY = 4.5f;
+
     [HideInInspector] public int killCount = 0;
 
     #region Unity Life Cycle
@@ -31,12 +32,11 @@ public class MonsterSpawner : MonoBehaviour
     #region Spawn
     public IEnumerator SpawnCoroutine()
     {
-        yield return new WaitForSecondsRealtime(spawnDelay / GameManager.instance.gameSpeed);
-
         if (this.transform.childCount > 0)
         {
             SpawnMonster(this.transform.GetChild(0).gameObject);//, isBoss);
         }
+        yield return new WaitForSecondsRealtime(spawnDelay / GameManager.instance.gameSpeed);
         StartCoroutine(SpawnCoroutine());
     }
     public void EndStage()

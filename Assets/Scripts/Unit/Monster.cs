@@ -7,10 +7,9 @@ public class Monster : Unit
     public override UnitType unitType => UnitType.Monster;
 
     [Header("Monster Reward")]
-    public int rewardGold;
-
-    private float despawnDelay = 1.0f;
-    public bool isBoss = false;
+    [HideInInspector] public bool isBoss = false;
+    public int rewardGold { get; private set; }
+    private float despawnDelay = 1.2f;
 
     #region Override
     public override void Init()

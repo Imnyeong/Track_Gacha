@@ -120,7 +120,6 @@ public class SelectButton : MonoBehaviour
             return;
         }
         SoundManager.instance.PlayUpgradeSound();
-
         GameManager.instance.BuyCharacter(curUnitData, _price);
         UIManager.instance.HideSelectPopup();
         GameManager.instance.SetStage(GameManager.instance.stage);
